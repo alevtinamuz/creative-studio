@@ -4,7 +4,7 @@
 		</nav>
 		<div class="container mx-auto mt-8">
 		<div class="bg-white shadow-lg p-4 rounded-lg">
-			<h1 class="text-2xl font-bold mb-4">Collaborative Canvas</h1>
+			<h1 class="text-2xl font-bold mb-4">Collaborative Canvas!</h1>
 			<div class="flex justify-center">
 			<canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing" class="border border-gray-300"></canvas>
 			</div>
