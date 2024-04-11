@@ -1,7 +1,6 @@
 <template>
 	<div class="bg-gray-100 min-h-screen flex flex-col">
 		<nav class="bg-white shadow-lg">
-		<!-- Navigation Bar -->
 		</nav>
 		<div class="flex-grow bg-gray-100 flex items-center justify-center">
 		<div class="max-w-lg p-6 bg-white rounded shadow-lg">

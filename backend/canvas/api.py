@@ -2,6 +2,7 @@ from django.http import JsonResponse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+from .forms import CanvasForm
 from .models import Canvas
 from .serializers import CanvasSerializer
 
@@ -17,8 +18,15 @@ def canvas_list(request):
 
 @api_view(['POST'])
 def canvas_create(request):
-    data = request.data
+    form = CanvasForm(request.data)
     
-    print(data)
-    
-    return JsonResponse({'hello': 'hepp'})
+    if form.is_valid():
+        canvas = form.save(commit=False)
+        canvas.created_by = request.user
+        canvas.save()
+        
+        serializer = CanvasSerializer(canvas)
+        
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        return JsonResponse({'error': 'add something here...'})
