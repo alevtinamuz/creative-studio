@@ -16,6 +16,15 @@ def canvas_list(request):
     return JsonResponse(serializer.data, safe=False)
 
 
+@api_view(['GET'])
+def canvas_list_feed(request, id):
+    canvases = Canvas.objects.filter(created_by_id=id)
+    
+    serializer = CanvasSerializer(canvases, many=True)
+    
+    return JsonResponse(serializer.data, safe=False)
+
+
 @api_view(['POST'])
 def canvas_create(request):
     form = CanvasForm(request.data)

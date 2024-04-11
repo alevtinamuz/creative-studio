@@ -7,7 +7,7 @@
                         <router-link :to="{'name': 'home'}" class="font-bold text-lg">Logo</router-link>
                     </div>
                     <div class="flex" v-if="userStore.user.isAuthenticated">
-                        <router-link :to="{'name': 'feed'}" class="mr-4">My account</router-link>
+                        <router-link :to="{name: 'feed', params:{'id': userStore.user.id}}" class="mr-4">My account</router-link>
                         <router-link :to="{'name': 'searchfriends'}" class="mr-4">Search friends</router-link>
                         <router-link :to="{'name': 'searchcanvases'}" class="mr-4">Search canvases</router-link>
                         <router-link :to="{'name': 'canvas'}" class="mr-4">My canvas</router-link>

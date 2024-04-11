@@ -11,19 +11,12 @@
 							<button @click="$refs.avatarInput.click()" class="bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Change Avatar</button>
 							<button @click="applyAvatar" class="mt-2 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Apply Avatar</button>
 						</div>
-						<h2 class="text-xl font-bold mt-4">{{ name }}</h2>
-						<p class="text-gray-600">{{ email }}</p>
+						<h2 class="text-xl font-bold mt-4">{{ userStore.user.name }}</h2>
+						<p class="text-gray-600">{{ userStore.user.email }}</p>
 					</div>
 				</div>
 				<div class="w-3/4 ml-8">
 					<div class="bg-white shadow-lg p-4 rounded-lg">
-						<h2 class="text-xl font-bold mb-4">Owned Canvases</h2>
-						<div v-for="canvas in canvases" v-bind:key="canvas.id" class="mb-6">
-							<h3 class="text-lg font-semibold">{{ canvas.name }}</h3>
-							<p class="text-gray-800">{{ canvas.avatar }}</p>
-							<p class="text-gray-600">{{ canvas.created_by.name }}</p>
-							<p class="text-gray-600">{{ canvas.created_at_formatted }} ago</p>
-						</div>
 						<h2 class="text-xl font-bold mb-4">Create new canvas</h2>
 						<div class="mt-4">
 							<form v-on:submit.prevent="submitForm" method="createCanvas">
@@ -31,8 +24,15 @@
 									<label for="name-canvas" class="text-gray-700 font-medium">Name</label>
 									<input v-model="name_canvas" type="name-canvas" id="name-canvas" class="w-full border border-gray-300 rounded p-2 mt-1" />
 								</div>
-								<button class="mt-4 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Create Canvas</button>
+								<button class="mt-4 mb-8 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Create Canvas</button>
 							</form>
+						</div>
+						<h2 class="text-xl font-bold mb-4">Owned Canvases</h2>
+						<div v-for="canvas in canvases" v-bind:key="canvas.id" class="mb-6">
+							<h3 class="text-lg font-semibold">{{ canvas.name }}</h3>
+							<p class="text-gray-800">{{ canvas.avatar }}</p>
+							<p class="text-gray-600">{{ canvas.created_by.name }}</p>
+							<p class="text-gray-600">{{ canvas.created_at_formatted }} ago</p>
 						</div>
 					</div>
 				</div>
@@ -43,6 +43,7 @@
 
 <script>
 import axios from 'axios'
+import { useUserStore } from '@/stores/user'
 
 export default {
     data() {
@@ -57,6 +58,14 @@ export default {
 		};
     },
 
+	setup() {
+		const userStore = useUserStore()
+
+		return {
+			userStore
+		}
+	},
+
 	mounted() {
 		this.getCanvases()
 	},
@@ -64,7 +73,7 @@ export default {
     methods: {
 		getCanvases() {
 			axios
-				.get('/api/canvases/')
+				.get(`/api/canvases/feed/${this.$route.params.id}/`)
 				.then(response => {
 					console.log('data', response.data)
 
