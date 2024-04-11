@@ -36,34 +36,54 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  data() {
-    return {
-      avatar: 'https://example.com/avatar.jpg',
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-      password: '',
-      canvases: [
-        // ...
-      ],
-      selectedAvatar: null,
-    };
-  },
-  methods: {
-    handleAvatarChange(event) {
-      this.selectedAvatar = event.target.files[0];
+    data() {
+		return {
+			avatar: 'https://example.com/avatar.jpg',
+			name: 'John Doe',
+			email: 'johndoe@example.com',
+			password: '',
+			canvases: [
+			// ...
+			],
+			selectedAvatar: null,
+		};
     },
-    applyAvatar() {
-      // You can upload the file to a storage service and store the URL for later use
-      // Add logic here to upload the file and store the URL
-      // For this example, we'll just update the avatar with the selected file
-      if (this.selectedAvatar) {
-        this.avatar = URL.createObjectURL(this.selectedAvatar);
-      }
+
+	mounted() {
+		this.getFeed()
+	},
+    
+    methods: {
+		getFeed() {
+			axios
+				.get('/api/canvases/')
+				.then(response => {
+					console.log('data', response.data)
+				})
+				.catch(error => {
+					console.log('error', error)
+				})
+		},
+
+		handleAvatarChange(event) {
+			this.selectedAvatar = event.target.files[0];
+		},
+
+		applyAvatar() {
+			// You can upload the file to a storage service and store the URL for later use
+			// Add logic here to upload the file and store the URL
+			// For this example, we'll just update the avatar with the selected file
+			if (this.selectedAvatar) {
+			this.avatar = URL.createObjectURL(this.selectedAvatar);
+			}
+		},
+
+		createCanvas() {
+			// Добавьте логику для создания холста
+		}
     },
-    createCanvas() {
-      // Добавьте логику для создания холста
-    }
-  },
 };
 </script>

@@ -11,7 +11,7 @@
                         <router-link :to="{'name': 'searchfriends'}" class="mr-4">Search friends</router-link>
                         <router-link :to="{'name': 'searchcanvases'}" class="mr-4">Search canvases</router-link>
                         <router-link :to="{'name': 'canvas'}" class="mr-4">My canvas</router-link>
-                        <router-link :to="{'name': 'logout'}" class="mr-4">Log out</router-link>
+                        <router-link :to="{'name': 'home'}" class="mr-4">Log out</router-link>
                     </div>
                     <div class="flex" v-else>
                         <router-link :to="{'name': 'home'}" class="mr-4">Home</router-link>
