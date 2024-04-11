@@ -12,4 +12,13 @@ def canvas_list(request):
     
     serializer = CanvasSerializer(canvases, many=True)
     
-    return JsonResponse({'data': serializer.data})
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['POST'])
+def canvas_create(request):
+    data = request.data
+    
+    print(data)
+    
+    return JsonResponse({'hello': 'hepp'})
