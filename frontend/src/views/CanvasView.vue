@@ -6,7 +6,6 @@
       <div class="bg-white shadow-lg p-4 rounded-lg">
         <!-- <h1 class="text-2xl font-bold mb-4">Create new canvas</h1> -->
         <div class="flex justify-center items-center">
-        <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing" class="border border-gray-300"></canvas>
         </div>
         <div class="flex items-center mt-4">
           <button @click="setColor('black')" class="w-10 h-10 rounded-full bg-black mr-2 hover:border-white hover:border-2"></button>
@@ -20,6 +19,7 @@
           <button @click="setLineWidth(5)" class="w-10 h-10 rounded-full bg-gray-400 mr-2 hover:border-black hover:border-2" title="Thick"></button>
         </div>
           <form v-on:submit.prevent="submitForm" method="createCanvas">
+            <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing" class="border border-gray-300"></canvas>
             <div class="flex flex-col items-center justify-center">
               <div class="m-4">
                 <label for="name-canvas" class="text-gray-700 font-medium">Name</label>
@@ -36,12 +36,16 @@
 </template>
   
 <script>
+import axios from 'axios';
+
   export default {
     data() {
       return {
         drawing: false,
         color: 'black',
         lineWidth: 1,
+        canvases: [],
+			  name_canvas: '',
       };
     },
     mounted() {
@@ -55,6 +59,7 @@
       submitForm() {
         axios
           .post('/api/canvases/create/', {
+            'canvas_data': this.canvas.toDataURL(),
             'name': this.name_canvas
           })
           .then(response => {
@@ -73,7 +78,6 @@
       },
       draw(event) {
         if (!this.drawing) return;
-        // this.context.fillRect(event.offsetX, event)
         this.context.lineTo(event.offsetX, event.offsetY);
         this.context.strokeStyle = this.color;
         this.context.lineWidth = this.lineWidth;
