@@ -32,6 +32,9 @@ def canvas_create(request):
     if form.is_valid():
         canvas = form.save(commit=False)
         canvas.created_by = request.user
+        canvas.last_user = request.user
+        canvas.canvas_data = request.data["canvas_data"]
+        print(request.data["canvas_data"])
         canvas.save()
         
         serializer = CanvasSerializer(canvas)
