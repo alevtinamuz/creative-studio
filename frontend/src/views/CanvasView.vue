@@ -6,7 +6,7 @@
       <div class="bg-white shadow-lg p-4 rounded-lg">
         <!-- <h1 class="text-2xl font-bold mb-4">Create new canvas</h1> -->
         <div class="flex justify-center items-center">
-        <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing" class="border border-gray-300 w-[800px] h-[400px]"></canvas>
+        <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing" class="border border-gray-300"></canvas>
         </div>
         <div class="flex items-center mt-4">
           <button @click="setColor('black')" class="w-10 h-10 rounded-full bg-black mr-2 hover:border-white hover:border-2"></button>
@@ -46,6 +46,8 @@
     },
     mounted() {
       this.canvas = this.$refs.canvas;
+      this.canvas.width = 800;
+      this.canvas.height = 400;
       this.context = this.canvas.getContext('2d');
     },
     methods: {
@@ -71,6 +73,7 @@
       },
       draw(event) {
         if (!this.drawing) return;
+        // this.context.fillRect(event.offsetX, event)
         this.context.lineTo(event.offsetX, event.offsetY);
         this.context.strokeStyle = this.color;
         this.context.lineWidth = this.lineWidth;
