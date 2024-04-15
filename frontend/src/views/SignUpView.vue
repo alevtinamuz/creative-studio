@@ -8,19 +8,19 @@
 			<form v-on:submit.prevent="submitForm" class="space-y-4">
 				<div>
 					<label for="name" class="text-gray-700 font-medium">Name</label>
-					<input v-model="form.name" type="text" id="name" class="w-full border border-gray-300 rounded p-2 mt-1" />
+					<input v-model="form.name" type="text" id="name" class="w-full border-2 border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded p-2 mt-1" />
 				</div>
 				<div>
 					<label for="email" class="text-gray-700 font-medium">Email</label>
-					<input v-model="form.email" type="email" id="email" class="w-full border border-gray-300 rounded p-2 mt-1" />
+					<input v-model="form.email" type="email" id="email" class="w-full border-2 border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded p-2 mt-1" />
 				</div>
 				<div>
 					<label for="password" class="text-gray-700 font-medium">Password</label>
-					<input v-model="form.password1" type="password" id="password" class="w-full border border-gray-300 rounded p-2 mt-1" />
+					<input v-model="form.password1" type="password" id="password" class="w-full border-2 border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded p-2 mt-1" />
 				</div>
 				<div>
 					<label for="confirmPassword" class="text-gray-700 font-medium">Confirm Password</label>
-					<input v-model="form.password2" type="password" id="confirmPassword" class="w-full border border-gray-300 rounded p-2 mt-1" />
+					<input v-model="form.password2" type="password" id="confirmPassword" class="w-full border-2 border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded p-2 mt-1" />
 				</div>
 
 				<template v-if="errors.length > 0">
@@ -30,7 +30,7 @@
 				</template>
 
 				<div>
-					<button type="submit" class="w-full bg-green-500 text-white font-medium py-2 rounded hover:bg-green-600 transition-colors">Register</button>
+					<button type="submit" class="w-full bg-blue-500 text-white font-medium py-2 rounded hover:bg-blue-600 transition-colors">Register</button>
 				</div>
 			</form>
 			<div class="text-center mt-4">
@@ -81,11 +81,18 @@ export default {
                 axios
                     .post('/api/signup/', this.form)
                     .then(response => {
+						this.userStore.setToken(response.data)
+
+						axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
+
+						this.userStore.setUserInfo(response.data)
 					
 						this.form.email = ''
 						this.form.name = ''
 						this.form.password1 = ''
 						this.form.password2 = ''
+
+						this.$router.push('/')
                         
                     })
                     .catch(error => {

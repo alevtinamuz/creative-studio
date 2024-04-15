@@ -27,7 +27,7 @@ const router = createRouter({
       component: LoginView,
     },
     {
-      path: '/feed/:id',
+      path: '/profile',
       name: 'feed',
       component: FeedView,
     },
