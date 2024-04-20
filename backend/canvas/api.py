@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
@@ -48,15 +48,41 @@ def canvas_create(request):
 @api_view(['GET'])
 def search_canvas_by_user(request):
     search_term = request.query_params.get('searchTerm')
-    # canvases = Canvas.objects.filter(created_by__icontains=search_term)
     users = User.objects.filter(name__iexact=search_term)
-
-    # Для каждого найденного пользователя получаем связанные с ним объекты Canvas
     canvases = Canvas.objects.filter(created_by__in=users)
-    # serializer = CanvasSerializer(users, many=True)
-    
-    # canvases = Canvas.objects.all()
     
     serializer = CanvasSerializer(canvases, many=True)
     
     return JsonResponse(serializer.data, safe=False)
+
+@api_view(['GET'])
+def get_canvas_by_id(request, canvas_id):
+    canvas = Canvas.objects.filter(id=canvas_id)
+    serializer = CanvasSerializer(canvas, many=True)
+
+    return JsonResponse(serializer.data[0], safe=False)
+
+@api_view(['PUT'])
+def canvas_update(request, canvas_id):
+    canvas = Canvas.objects.get(id=canvas_id)
+    canvas_data = request.data.get('canvas_data')
+    if canvas_data:
+        canvas.canvas_data = canvas_data
+        canvas.save()
+        serializer = CanvasSerializer(canvas)
+        
+        return JsonResponse(serializer.data, safe=False)
+    else:
+
+        return JsonResponse(form.errors, status=400)
+       
+@api_view(['DELETE'])
+def delete_canvas(request, canvas_id):
+    try:
+        canvas = Canvas.objects.get(id=canvas_id)
+        canvas.delete()
+
+        return JsonResponse({'message': 'Canvas deleted successfully'})
+    except Canvas.DoesNotExist:
+        
+        return JsonResponse({'error': 'Canvas not found'}, status=404)

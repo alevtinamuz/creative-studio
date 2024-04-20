@@ -5,7 +5,8 @@
 			<p class="text-gray-800">{{ canvas.avatar }}</p>
 			<p class="text-gray-600">{{ canvas.created_by.name }}</p>
 			<p class="text-gray-600">{{ canvas.created_at_formatted }} ago</p>
-			<button class="w-full bg-blue-500 text-white font-medium py-2 rounded hover:bg-blue-600 transition-colors">Edit</button>
+			<p class="text-gray-600">{{ canvas.id }}</p>
+			<button @click="getCanvas(canvas.id)" class="w-full bg-blue-500 text-white font-medium py-2 rounded hover:bg-blue-600 transition-colors">Edit</button>
 		</div>
 		
 	</div>
@@ -14,6 +15,7 @@
 <script>
 import axios from 'axios'
 import { useUserStore } from '@/stores/user'
+// import router from '@/router';
 
 export default {
 	data() {
@@ -35,17 +37,10 @@ export default {
 	},
 		
 	methods: {
-		getCanvases() {
-			axios
-				.get(`/api/canvases/`)
-				.then(response => {
-				console.log('data', response.data)
 
-				this.canvases = response.data
-				})
-				.catch(error => {
-				console.log('error', error)
-				})
+		getCanvas(id) {
+			localStorage.setItem('canvas_id', id)
+			this.$router.push({name: 'edit_canvas', params:{'id': id}})
 		},
 
 		getCanvasesByUser() {

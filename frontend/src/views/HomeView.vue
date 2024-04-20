@@ -4,7 +4,7 @@
           <div class="max-w-lg p-6 bg-white rounded shadow-lg">
             <h1 class="text-2xl font-bold mb-6">Draw with Friends!</h1>
             <p class="text-gray-600 mb-8">
-                Welcome to our website where you can draw with friends in real-time.
+                Welcome to our website where you can create!
             </p>
             <div class="flex justify-center">
                 <div class="border-2 border-gray-300 rounded-lg p-4">
