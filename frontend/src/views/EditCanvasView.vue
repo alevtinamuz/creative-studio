@@ -20,9 +20,34 @@
             <div class="flex flex-row items-center justify-center">
                 <button @click="updateCanvas" class="m-5 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Save</button>
 
+                <button @click="searchTrue" class="m-5 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Add collaborators</button>
                 
                 <button @click="deleteCanvas" class="m-5 bg-red-500 text-white font-medium py-2 px-4 rounded hover:bg-red-600 transition-colors">Delete this canvas</button>
             
+            </div>
+
+            <div v-if="search">
+                <div class="bg-white shadow-lg p-4 rounded-lg">
+                <button @click="saveCollaborators" class="m-5 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Save</button>
+                <h1 class="text-2xl font-bold mb-4">Search collaborators</h1>
+                <div class="flex items-center mt-4">
+                    <input v-model="searchName" type="text" placeholder="Search by Name" class="w-full border border-gray-300 rounded p-2 mr-2">
+                    <button @click="searchByName" class="bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Search</button>
+                </div>
+                <div class="flex items-center mt-4">
+                    <input v-model="searchEmail" type="text" placeholder="Search by Email" class="w-full border border-gray-300 rounded p-2 mr-2">
+                    <button @click="searchByEmail" class="bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Search</button>
+                </div>
+                <h2 class="text-xl mt-6 font-bold">Search Results</h2>
+                <ul class="mt-4">
+                    <li v-for="user in searchResults" :key="user.id" class="bg-white shadow p-4 rounded-lg mb-4">
+                    <h3 class="text-lg font-semibold">{{ user.name }}</h3>
+                    <p class="text-gray-600">{{ user.email }}</p>
+                    <button v-if="!collaborators_id.includes(user.id) && !saved_collaborators_id.includes(user.id)" @click="addCollaborator(user.id) && !saved_collaborators_id.includes(user.id)" class="m-5 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Add</button>
+                    <button v-if="collaborators_id.includes(user.id) && !saved_collaborators_id.includes(user.id)" @click="deleteCollaborator(user.id)" class="m-5 bg-white border-2 border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-blue-500 font-medium py-2 px-4 rounded transition-colors">Added</button>
+                    </li>
+                </ul>
+                </div>
             </div>
 
         </div>
@@ -37,11 +62,16 @@ import axios from 'axios';
 
     data() {
       return {
+        search: false,
         drawing: false,
         color: 'black',
         lineWidth: 1,
 		name_canvas: '',
         canvas_data: '',
+        collaborators_id: [],
+        searchResults: [],
+        saved_collaborators_id: [],
+
       };
     },
 
@@ -51,9 +81,96 @@ import axios from 'axios';
       this.canvas.height = 400;
       this.context = this.canvas.getContext('2d');
       this.getCanvasData();
+      this.getUsers();
+      this.getCollaborators();
     },
 
     methods: {
+
+        getCollaborators() {
+            axios.get('/api/canvases/' + localStorage.getItem('canvas_id') + '/get_users/')
+                .then(response => {
+                    this.saved_collaborators_id = response.data.users.split(',').filter(id => id != '');
+                
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        },
+
+        saveCollaborators() {
+            this.collaborators_id.forEach(user_id => {
+                // console.log(user_id)
+                
+                
+                axios.put('/api/' + user_id + '/add_canv/', {
+                "canv_id": localStorage.getItem('canvas_id')
+                })
+                .then(() => {
+                    console.log('canvas was added!')
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+
+                axios.put('/api/canvases/' + localStorage.getItem('canvas_id') + '/add_user/', {
+                    "user_id": user_id
+                })
+                .then(response => {
+                    console.log('user was added!')
+                    console.log(response.data)
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+
+
+                // axios.get('/api/' + user_id + '/')
+                // .then(response => {
+                //     console.log(response.data.canv)
+                // })
+                // .catch(error => {
+                //     console.error(error);
+                // });
+            });
+            
+        },
+
+        getUsers() {
+            axios
+            .get(`/api/users/`)
+            .then(response => {
+            console.log('data', response.data)
+
+            this.searchResults = response.data
+            })
+            .catch(error => {
+            console.log('error', error)
+            })
+        },
+
+        searchByName() {
+          axios.get('/api/search_by_name/?searchTerm=' + this.searchName)
+              .then(response => {
+                  this.searchResults = response.data;
+              })
+              .catch(error => {
+                  console.log(error);
+              });
+        },
+        searchByEmail() {
+            axios.get('/api/search_by_email/?searchTerm=' + this.searchEmail)
+                .then(response => {
+                    this.searchResults = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
 
         getCanvasData() {
             const canvasId = localStorage.getItem('canvas_id');
@@ -79,13 +196,25 @@ import axios from 'axios';
                 "canvas_data": this.canvas.toDataURL()
             })
             .then(() => {
-                console.log(555)
                 localStorage.setItem('canvas_id', "")
                 this.$router.push('/search_canvases')
             })
             .catch((error) => {
                 console.error(error);
             });
+        },
+
+        searchTrue() {
+            this.search = true;
+        },
+
+        addCollaborator(user_id) {
+            this.collaborators_id.push(user_id)
+
+        },
+
+        deleteCollaborator(user_id) {
+            this.collaborators_id = this.collaborators_id.filter((id) => id != user_id)
         },
 
         async deleteCanvas() {

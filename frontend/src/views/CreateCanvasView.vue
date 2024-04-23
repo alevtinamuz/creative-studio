@@ -45,6 +45,7 @@ import axios from 'axios';
         lineWidth: 1,
         canvases: [],
 			  name_canvas: '',
+        canvas_id: '',
       };
     },
     mounted() {
@@ -61,16 +62,41 @@ import axios from 'axios';
         axios
           .post('/api/canvases/create/', {
             'canvas_data': this.canvas.toDataURL(),
-            'name': this.name_canvas
+            'name': this.name_canvas,
           })
           .then(response => {
             this.canvases.unshift(response.data)
             this.name_canvas = ''
-            this.$router.push('/search_canvases')
+            // this.canvas_id = response.data.id
+            axios.put('/api/' + localStorage.getItem('user.id') + '/add_canv/', {
+                "canv_id": response.data.id
+                })
+                .then(() => {
+                    console.log('canvas was added!')
+                    this.$router.push('/search_canvases')
+                    
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            // console.log(response.data)
+            
           })
           .catch(error => {
             console.log('error', error)
           })
+
+          // axios.put('/api/' + localStorage.getItem('user.id') + '/add_canv/', {
+          //       "canv_id": this.canvas_id
+          //       })
+          //       .then(() => {
+          //           console.log('canvas was added!')
+          //           // this.$router.push('/search_canvases')
+                    
+          //       })
+          //       .catch((error) => {
+          //           console.error(error);
+          //       });
       },
 
       startDrawing(event) {

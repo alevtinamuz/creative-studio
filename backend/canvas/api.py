@@ -34,6 +34,7 @@ def canvas_create(request):
         canvas = form.save(commit=False)
         canvas.created_by = request.user
         canvas.last_user = request.user
+        canvas.users = request.user.id
         canvas.canvas_data = request.data["canvas_data"]
         print(request.data["canvas_data"])
         canvas.save()
@@ -86,3 +87,30 @@ def delete_canvas(request, canvas_id):
     except Canvas.DoesNotExist:
         
         return JsonResponse({'error': 'Canvas not found'}, status=404)
+
+
+@api_view(['PUT'])
+def add_user(request, canvas_id):
+    canvas = Canvas.objects.get(id=canvas_id)
+    user_id = request.data.get('user_id')
+    if (canvas.users is None):
+        canvas.users = user_id
+        canvas.save()
+        serializer = CanvasSerializer(canvas)
+        
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        if (not user_id in canvas.users):
+            canvas.users += ',' + user_id
+            canvas.save()
+        serializer = CanvasSerializer(canvas)
+        
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET'])
+def get_users(request, canvas_id):
+    canvas = Canvas.objects.filter(id=canvas_id)
+    serializer = CanvasSerializer(canvas, many=True)
+
+    return JsonResponse(serializer.data[0], safe=False)

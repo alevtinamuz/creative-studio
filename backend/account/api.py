@@ -56,9 +56,45 @@ def search_by_email(request):
     
     return JsonResponse(serializer.data, safe=False)
 
+
+@api_view(['GET'])
+def search_by_id(request, user_id):
+    user = User.objects.filter(id=user_id)
+    serializer = UserSerializer(user, many=True)
+
+    return JsonResponse(serializer.data[0], safe=False)
+
+
 @api_view(['GET'])
 def user_list(request):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         
         return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['PUT'])
+def add_canv(request, user_id):
+    user = User.objects.get(id=user_id)
+    canv_id = request.data.get('canv_id')
+    if (user.canv is None):
+        user.canv = canv_id
+        user.save()
+        serializer = UserSerializer(user)
+        
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        if (not canv_id in user.canv):
+            user.canv += ',' + canv_id
+            user.save()
+        serializer = UserSerializer(user)
+        
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET'])
+def get_canv(request, user_id):
+    user = User.objects.filter(id=user_id)
+    serializer = UserSerializer(user, many=True)
+
+    return JsonResponse(serializer.data[0], safe=False)
