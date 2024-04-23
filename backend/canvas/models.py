@@ -10,6 +10,7 @@ class Canvas(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     avatar = models.ImageField(upload_to='canvas_avatars', blank=True, null=True)
     
+    users = models.CharField(max_length=10**6, blank=True, null=True) 
     canvas_data = models.CharField(max_length=10**6, blank=True, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, related_name='canvases', on_delete=models.CASCADE)

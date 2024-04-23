@@ -11,4 +11,8 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('search_by_name/', api.search_by_name, name='search_by_name'),
     path('search_by_email/', api.search_by_email, name='search_by_email'),
+    # path('search_by_id/', api.search_by_id, name='search_by_id'),
+    path('<str:user_id>/', api.search_by_id, name='search_by_id'),
+    path('<str:user_id>/add_canv/', api.add_canv, name='add_canv'),
+    path('<str:user_id>/get_canv/', api.get_canv, name='get_canv'),
 ]
