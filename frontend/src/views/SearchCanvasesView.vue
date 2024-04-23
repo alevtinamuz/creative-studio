@@ -20,7 +20,8 @@ import { useUserStore } from '@/stores/user'
 export default {
 	data() {
 		return {
-			canvases: []
+			canvases: [],
+			canvases_id: [],
 		};
 	},
 
@@ -33,6 +34,7 @@ export default {
 	},
 
 	mounted() {
+		this.getCanvasesIdByUser()
 		this.getCanvasesByUser()
 	},
 		
@@ -44,13 +46,57 @@ export default {
 		},
 
 		getCanvasesByUser() {
-			axios.get('/api/canvases/search_canvas_by_user/?searchTerm=' + this.userStore.user.name)
-              .then(response => {
-                  this.canvases = response.data;
-              })
-              .catch(error => {
-                  console.log(error);
-              });
+			// console.log(this.canvases_id)
+			this.canvases_id.forEach(canvas_id => {
+				console.log(555)
+				axios.get('/api/canvases/' + canvas_id + '/')
+					.then(response => {
+						
+						this.canvases.push(response.data)
+						// console.log(response.data.canv.split(',').filter(id => id != ''))
+						console.log(response.data)
+					})
+					.catch((error) => {
+						console.error(error);
+					});
+			});
+		},
+
+		getCanvasesIdByUser() {
+			axios.get('/api/' + localStorage.getItem('user.id') + '/get_canv/')
+                .then(response => {
+					if (response.data != null)
+						this.canvases_id = response.data.canv.split(',').filter(id => id != '')
+						this.canvases_id.forEach(canvas_id => {
+							console.log(555)
+							axios.get('/api/canvases/' + canvas_id + '/')
+								.then(response => {
+									
+									this.canvases.push(response.data)
+									// console.log(response.data.canv.split(',').filter(id => id != ''))
+									console.log(response.data)
+								})
+								.catch((error) => {
+									console.error(error);
+								});
+						});
+					// console.log(this.canvases_id.length)
+                    // console.log(response.data.canv.split(',').filter(id => id != ''))
+					// console.log(this.canvases_id)
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+			console.log(this.canvases_id, 'jhgjhg')
+			
+			// axios.get('/api/canvases/search_canvas_by_user/?searchTerm=' + this.userStore.user.name)
+            //   .then(response => {
+            //       this.canvases = response.data;
+            //   })
+            //   .catch(error => {
+            //       console.log(error);
+            //   });
 		}
 	},
 };
