@@ -7,6 +7,7 @@ import SearchFriendsView from '../views/SearchFriendsView.vue'
 import SearchCanvasesView from '../views/SearchCanvasesView.vue'
 import CreateCanvasView from '../views/CreateCanvasView.vue'
 import EditCanvasView from '@/views/EditCanvasView.vue'
+import TestSocket from '@/views/TestSocket.vue'
 
 
 const router = createRouter({
@@ -53,6 +54,11 @@ const router = createRouter({
       path: '/edit_canvas/:id',
       name: 'edit_canvas',
       component: EditCanvasView,
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: TestSocket,
     },
   ]
 })

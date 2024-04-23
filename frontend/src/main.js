@@ -1,21 +1,21 @@
-import './assets/main.css'
+import './assets/main.css';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import router from './router';
+import axios from 'axios';
+// import { io } from 'socket.io-client';
+// import VueSocketIO from 'vue-socket.io';
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+const app = createApp(App);
 
-import App from './App.vue'
-import router from './router'
-import axios from 'axios'
+axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
-const app = createApp(App)
+app.use(createPinia());
+app.use(router, axios);
 
-// const socket = new Sock('http://127.0.0.1:8000'); // Замените localhost:8080 на URL вашего сервера
+// const socket = io('ws://localhost:8000'); // Создаем экземпляр сокета
 
-// app.config.globalProperties.$socket = socket;
+// app.use(VueSocketIO, socket);
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000'
-
-app.use(createPinia())
-app.use(router, axios)
-
-app.mount('#app')
+app.mount('#app');

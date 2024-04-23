@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from . import api
+from . import consumers
 
 urlpatterns = [
     path('users/', api.user_list, name='user_list'),
@@ -15,4 +16,5 @@ urlpatterns = [
     path('<str:user_id>/', api.search_by_id, name='search_by_id'),
     path('<str:user_id>/add_canv/', api.add_canv, name='add_canv'),
     path('<str:user_id>/get_canv/', api.get_canv, name='get_canv'),
+    path("ws/", consumers.Consumer.as_asgi()),
 ]
