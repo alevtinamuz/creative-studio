@@ -41,7 +41,7 @@ export default {
 	methods: {
 
 		getCanvas(id) {
-			localStorage.setItem('canvas_id', id)
+			sessionStorage.setItem('canvas_id', id)
 			this.$router.push({name: 'edit_canvas', params:{'id': id}})
 		},
 
@@ -63,7 +63,7 @@ export default {
 		},
 
 		getCanvasesIdByUser() {
-			axios.get('/api/' + localStorage.getItem('user.id') + '/get_canv/')
+			axios.get('/api/' + sessionStorage.getItem('user.id') + '/get_canv/')
                 .then(response => {
 					if (response.data != null)
 						this.canvases_id = response.data.canv.split(',').filter(id => id != '')

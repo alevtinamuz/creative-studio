@@ -43,8 +43,17 @@
 
 <script>
 import axios from 'axios'
+import { useUserStore } from '@/stores/user'
 
 export default {
+	setup() {
+        const userStore = useUserStore()
+
+        return {
+            userStore
+        }
+    },
+
     data() {
         return {
             form: {
@@ -53,12 +62,16 @@ export default {
                 password1: '',
                 password2: ''
             },
+			login_form: {
+                email: '',
+                password: ''
+            },
             errors: [],
         }
     },
 
     methods: {
-        submitForm() {
+        async submitForm() {
             this.errors = []
 
             if (this.form.email === '') {
@@ -80,24 +93,71 @@ export default {
             if (this.errors.length === 0) {
                 axios
                     .post('/api/signup/', this.form)
-                    .then(response => {
-						this.userStore.setToken(response.data)
+                    .then(() => {
+						// this.userStore.setToken(response.data)
 
-						axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
+						// axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
 
-						this.userStore.setUserInfo(response.data)
+						// this.userStore.setUserInfo(response.data)
+						this.login_form.email = this.form.email;
+						this.login_form.password = this.form.password1;
+
+						axios
+							.post('/api/login/', this.login_form)
+							.then(response => {
+								this.userStore.setToken(response.data)
+
+								axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
+
+								axios
+									.get('/api/me/')
+									.then(response => {
+				
+										this.userStore.setUserInfo(response.data)
+
+										this.$router.push('/')
+									})
+									.catch(error => {
+										console.log('error', error)
+									})
+							})
+							.catch(error => {
+								console.log('error', error)
+							})
 					
-						this.form.email = ''
-						this.form.name = ''
-						this.form.password1 = ''
-						this.form.password2 = ''
+						// this.form.email = ''
+						// this.form.name = ''
+						// this.form.password1 = ''
+						// this.form.password2 = ''
 
-						this.$router.push('/')
                         
                     })
                     .catch(error => {
                         console.log('error', error)
                     })
+
+					// await axios
+                    // .post('/api/login/', this.login_form)
+                    // .then(response => {
+                    //     this.userStore.setToken(response.data)
+
+                    //     axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
+                    // })
+                    // .catch(error => {
+                    //     console.log('error', error)
+                    // })
+                
+					// await axios
+					// 	.get('/api/me/')
+					// 	.then(response => {
+	
+					// 		this.userStore.setUserInfo(response.data)
+
+					// 		this.$router.push('/')
+					// 	})
+					// 	.catch(error => {
+					// 		console.log('error', error)
+					// 	})
             }
         }
     }
