@@ -68,7 +68,7 @@ import axios from 'axios';
             this.canvases.unshift(response.data)
             this.name_canvas = ''
             // this.canvas_id = response.data.id
-            axios.put('/api/' + localStorage.getItem('user.id') + '/add_canv/', {
+            axios.put('/api/' + sessionStorage.getItem('user.id') + '/add_canv/', {
                 "canv_id": response.data.id
                 })
                 .then(() => {
@@ -86,7 +86,7 @@ import axios from 'axios';
             console.log('error', error)
           })
 
-          // axios.put('/api/' + localStorage.getItem('user.id') + '/add_canv/', {
+          // axios.put('/api/' + sessionStorage.getItem('user.id') + '/add_canv/', {
           //       "canv_id": this.canvas_id
           //       })
           //       .then(() => {

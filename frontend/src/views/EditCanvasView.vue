@@ -18,7 +18,7 @@
             </div>
             
             <div class="flex flex-row items-center justify-center">
-                <button @click="updateCanvas" class="m-5 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Save</button>
+                <!-- <button @click="updateCanvas" class="m-5 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Save</button> -->
 
                 <button @click="searchTrue" class="m-5 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition-colors">Add collaborators</button>
                 
@@ -88,7 +88,7 @@ import axios from 'axios';
     methods: {
 
         getCollaborators() {
-            axios.get('/api/canvases/' + localStorage.getItem('canvas_id') + '/get_users/')
+            axios.get('/api/canvases/' + sessionStorage.getItem('canvas_id') + '/get_users/')
                 .then(response => {
                     this.saved_collaborators_id = response.data.users.split(',').filter(id => id != '');
                 
@@ -104,7 +104,7 @@ import axios from 'axios';
                 
                 
                 axios.put('/api/' + user_id + '/add_canv/', {
-                "canv_id": localStorage.getItem('canvas_id')
+                "canv_id": sessionStorage.getItem('canvas_id')
                 })
                 .then(() => {
                     console.log('canvas was added!')
@@ -115,7 +115,7 @@ import axios from 'axios';
                 });
 
 
-                axios.put('/api/canvases/' + localStorage.getItem('canvas_id') + '/add_user/', {
+                axios.put('/api/canvases/' + sessionStorage.getItem('canvas_id') + '/add_user/', {
                     "user_id": user_id
                 })
                 .then(response => {
@@ -126,16 +126,6 @@ import axios from 'axios';
                 .catch((error) => {
                     console.error(error);
                 });
-
-
-
-                // axios.get('/api/' + user_id + '/')
-                // .then(response => {
-                //     console.log(response.data.canv)
-                // })
-                // .catch(error => {
-                //     console.error(error);
-                // });
             });
             
         },
@@ -173,7 +163,7 @@ import axios from 'axios';
         },
 
         getCanvasData() {
-            const canvasId = localStorage.getItem('canvas_id');
+            const canvasId = sessionStorage.getItem('canvas_id');
 
             axios.get('/api/canvases/' + canvasId + '/')
             .then(response => {
@@ -190,14 +180,14 @@ import axios from 'axios';
         },
 
         updateCanvas() {
-            const canvasId = localStorage.getItem('canvas_id');
+            const canvasId = sessionStorage.getItem('canvas_id');
 
             axios.put('/api/canvases/' + canvasId + '/update/', {
                 "canvas_data": this.canvas.toDataURL()
             })
             .then(() => {
-                localStorage.setItem('canvas_id', "")
-                this.$router.push('/search_canvases')
+                // sessionStorage.setItem('canvas_id', "")
+                // this.$router.push('/search_canvases')
             })
             .catch((error) => {
                 console.error(error);
@@ -218,11 +208,11 @@ import axios from 'axios';
         },
 
         async deleteCanvas() {
-            const canvasId = localStorage.getItem('canvas_id');
+            const canvasId = sessionStorage.getItem('canvas_id');
             try {
                 const response = await axios.delete(`/api/canvases/${canvasId}/delete/`);
                 console.log(response.data);
-                localStorage.setItem('canvas_id', "")
+                sessionStorage.setItem('canvas_id', "")
                 this.$router.push('/search_canvases')
             } catch (error) {
                 console.error(error);
@@ -243,6 +233,8 @@ import axios from 'axios';
             this.context.lineCap = 'round';
             this.context.lineJoin = 'round';
             this.context.stroke();
+            this.updateCanvas();
+            
         },
 
         stopDrawing() {
