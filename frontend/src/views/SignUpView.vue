@@ -94,11 +94,6 @@ export default {
                 axios
                     .post('/api/signup/', this.form)
                     .then(() => {
-						// this.userStore.setToken(response.data)
-
-						// axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
-
-						// this.userStore.setUserInfo(response.data)
 						this.login_form.email = this.form.email;
 						this.login_form.password = this.form.password1;
 
@@ -124,40 +119,11 @@ export default {
 							.catch(error => {
 								console.log('error', error)
 							})
-					
-						// this.form.email = ''
-						// this.form.name = ''
-						// this.form.password1 = ''
-						// this.form.password2 = ''
-
                         
                     })
                     .catch(error => {
                         console.log('error', error)
                     })
-
-					// await axios
-                    // .post('/api/login/', this.login_form)
-                    // .then(response => {
-                    //     this.userStore.setToken(response.data)
-
-                    //     axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
-                    // })
-                    // .catch(error => {
-                    //     console.log('error', error)
-                    // })
-                
-					// await axios
-					// 	.get('/api/me/')
-					// 	.then(response => {
-	
-					// 		this.userStore.setUserInfo(response.data)
-
-					// 		this.$router.push('/')
-					// 	})
-					// 	.catch(error => {
-					// 		console.log('error', error)
-					// 	})
             }
         }
     }

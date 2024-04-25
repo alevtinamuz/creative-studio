@@ -8,9 +8,7 @@
                     </div>
                     <div class="flex" v-if="userStore.user.isAuthenticated">
                         <router-link :to="{name: 'feed', params:{'id': userStore.user.id}}" class="mr-4">My account</router-link>
-                        <!-- <router-link :to="{'name': 'search_friends'}" class="mr-4">Search friends</router-link> -->
                         <router-link :to="{'name': 'search_canvases'}" class="mr-4">My canvases</router-link>
-                        <router-link :to="{'name': 'create_canvas'}" class="mr-4">Create new canvas</router-link>
                     </div>
                     <div class="flex" v-else>
                         <router-link :to="{'name': 'signup'}" class="mr-4">Sign up</router-link>

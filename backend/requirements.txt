@@ -1,0 +1,8 @@
+asgiref
+channels
+daphne
+django
+django-cors-headers
+djangorestframework
+djangorestframework-simplejwt
+Pillow
